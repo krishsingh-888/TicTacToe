@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.Scanner;
 
 public class TicTacToe {
 
@@ -9,6 +10,9 @@ public class TicTacToe {
     static char playerSymbol, computerSymbol;
     static boolean playerTurn;
     static Random random = new Random();
+
+    // UC3: Scanner for user input
+    static Scanner scanner = new Scanner(System.in);
 
     // UC1: Initialize all cells with '-'
     static void initBoard() {
@@ -31,7 +35,7 @@ public class TicTacToe {
 
     // UC2: Toss to randomly assign symbols and decide first player
     static void toss() {
-        int result = random.nextInt(2); // 0 = player wins toss, 1 = computer wins
+        int result = random.nextInt(2);
         if (result == 0) {
             playerSymbol   = 'X';
             computerSymbol = 'O';
@@ -45,11 +49,40 @@ public class TicTacToe {
         }
     }
 
+    // UC3: Read a valid slot number (1-9) from user
+    static int getUserSlot() {
+        int slot = -1;
+        while (slot < 1 || slot > 9) {
+            System.out.print("Enter slot (1-9): ");
+            if (scanner.hasNextInt()) {
+                slot = scanner.nextInt();
+                if (slot < 1 || slot > 9)
+                    System.out.println("Invalid. Must be between 1 and 9.");
+            } else {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.next();
+            }
+        }
+        return slot;
+    }
+
+    // UC4: Convert slot (1-9) to row and column using division and modulo
+    static int[] slotToIndex(int slot) {
+        int row = (slot - 1) / 3;
+        int col = (slot - 1) % 3;
+        return new int[]{row, col};
+    }
+
     public static void main(String[] args) {
         System.out.println("=== Tic-Tac-Toe ===");
         initBoard();
         printBoard();
         toss();
         System.out.println("Player: " + playerSymbol + " | Computer: " + computerSymbol);
+
+        int slot  = getUserSlot();
+        int[] idx = slotToIndex(slot);
+        System.out.println("Slot " + slot + " → row=" + idx[0] + ", col=" + idx[1]);
+        scanner.close();
     }
 }
